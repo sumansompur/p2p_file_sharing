@@ -6,7 +6,14 @@ def split_file(source_path, dest_path):
     with open(source_path, 'rb') as f:                                                              #open source file in binary read mode
         chunk = f.read(CHUNK_SIZE)
         while chunk:
-            with open(dest_path + '/' + 'my_song_part_' + str(file_number), 'wb') as chunk_file:
+            if source_path.endswith('.mp3'):
+                dest_name = '/audio/my_song_part_'
+            elif source_path.endswith('.txt'):
+                dest_name = '/text/my_text_part_'
+            elif source_path.endswith('.mp4'):
+                dest_name = '/video/my_video_part_'
+                 
+            with open(dest_path + dest_name + str(file_number), 'wb') as chunk_file:
                 chunk_file.write(chunk)                                                             #create and write bin files containing file data
             file_number += 1                
             chunk = f.read(CHUNK_SIZE)
