@@ -1,7 +1,7 @@
 import socket
 import threading
 from _thread import *
-import os, time
+import os
 
 thread_lock = threading.Lock()
 SOCKET_PORT = 1234
@@ -31,30 +31,25 @@ def init():
     tracker_socket.listen(5)
     return tracker_socket
 
-def send_info(conn_sock):
+def send_info(conn_sock, addr):
     C_ip = conn_sock.recv(1024)
     global active
-    send_message = str(active) + ',' + str(file_chunk_nos())
-    conn_sock.send(send_message)
-    active.append(C_ip)
-    conn_sock.close()
-    start_new_thread(inactivator, (C_ip,))
-    return None
+    if C_ip.lower() == 'bye':
+        active.remove(addr[0])
+    else:
+        send_message = str(active) + ',' + str(file_chunk_nos())
+        conn_sock.send(send_message)
+        active.append(addr[0])
+        conn_sock.close()
+        return None
 
-def inactivator(C_ip):
-    time.sleep(120)
-    global active
-    try:
-        active.remove(C_ip)
-    except:
-        active = active
 
 def main():
     tracker = init()
     global active
     while True:
         conn_sock, addr = tracker.accept()
-        start_new_thread(send_info, (conn_sock,))
+        start_new_thread(send_info, (conn_sock, addr))
 
 
 

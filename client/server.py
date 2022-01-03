@@ -1,4 +1,3 @@
-import chunker
 import socket
 import os, shutil
 import threading
@@ -15,21 +14,20 @@ def init():
 
 def send_data(conn_socket):
     file_no = conn_socket.recv(1024)
-    myfile = open(os.path.join(os.getcwd(), 'server', 'file_chunks', file_no), 'rb')
-    conn_socket.send(myfile.read())
-    conn_socket.close()
+    try:
+        myfile = open(os.path.join(os.getcwd(), 'client', 'file_chunks', file_no), 'rb')
+        conn_socket.send(myfile.read())
+        conn_socket.close()
+    except:
+        conn_socket.send('file unavailable')
     return None
 
 def main():
     server = init()
-    path = input("Enter the absolute file path\n")
-    source_path = os.path.join(os.getcwd(), 'server', 'send_samples', os.path.basename(path))
-    dest_path = os.path.join(os.getcwd(), 'server', 'file_chunks')
-    shutil.copy(path, source_path)
-    chunker.split_file(source_path, dest_path)
     while True:
         sock_obj, addr = server.accept()
         start_new_thread(send_data, (sock_obj,))
+
 
 
 
