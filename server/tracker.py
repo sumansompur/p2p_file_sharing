@@ -36,6 +36,7 @@ def send_info(conn_sock, addr):
     global active
     if C_ip.lower() == 'bye':
         active.remove(addr[0])
+        conn_sock.send('bye')
     else:
         send_message = str(active) + ',' + str(file_chunk_nos())
         conn_sock.send(send_message)
