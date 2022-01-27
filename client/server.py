@@ -13,13 +13,13 @@ def init():
     return server_socket
 
 def send_data(conn_socket):
-    file_no = conn_socket.recv(1024)
+    file_no = str(conn_socket.recv(1024), 'utf-8')
     try:
         myfile = open(os.path.join(os.getcwd(), 'client', 'file_chunks', file_no), 'rb')
         conn_socket.send(myfile.read())
         conn_socket.close()
     except:
-        conn_socket.send('file unavailable')
+        conn_socket.send(bytes('file unavailable', 'utf-8'))
     return None
 
 def main():

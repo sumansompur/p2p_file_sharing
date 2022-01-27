@@ -32,13 +32,15 @@ def init():
     return tracker_socket
 
 def send_info(conn_sock, addr):
-    C_ip = conn_sock.recv(1024)
+    C_ip = str(conn_sock.recv(1024), 'utf-8')
     global active
     if C_ip.lower() == 'bye':
         active.remove(addr[0])
         conn_sock.send('bye')
     else:
         send_message = str(active) + ',' + str(file_chunk_nos())
+        print(send_message)
+        send_message = bytes(send_message,'utf-8')
         conn_sock.send(send_message)
         active.append(addr[0])
         conn_sock.close()

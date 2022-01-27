@@ -14,23 +14,26 @@ def init():
     return server_socket
 
 def send_data(conn_socket):
-    file_no = conn_socket.recv(1024)
+    file_no = str(conn_socket.recv(1024), 'utf-8')
+    print(file_no)
     myfile = open(os.path.join(os.getcwd(), 'server', 'file_chunks', file_no), 'rb')
     conn_socket.send(myfile.read())
     conn_socket.close()
     return None
 
 def main():
-    server = init()
-    path = input("Enter the absolute file path\n")
-    source_path = os.path.join(os.getcwd(), 'server', 'send_samples', os.path.basename(path))
-    dest_path = os.path.join(os.getcwd(), 'server', 'file_chunks')
-    shutil.copy(path, source_path)
-    chunker.split_file(source_path, dest_path)
-    while True:
-        sock_obj, addr = server.accept()
-        start_new_thread(send_data, (sock_obj,))
-
+    try:
+        server = init()
+        path = input("Enter the absolute file path\n")
+        source_path = os.path.join(os.getcwd(), 'server', 'send_samples', os.path.basename(path))
+        dest_path = os.path.join(os.getcwd(), 'server', 'file_chunks')
+        shutil.copy(path, source_path)
+        chunker.split_file(source_path, dest_path)
+        while True:
+            sock_obj, addr = server.accept()
+            start_new_thread(send_data, (sock_obj,))
+    except KeyboardInterrupt:
+        server.close()
 
 
 
