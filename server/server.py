@@ -17,7 +17,7 @@ def send_data(conn_socket):
     file_no = str(conn_socket.recv(1024), 'utf-8')
     print(file_no)
     myfile = open(os.path.join(os.getcwd(), 'server', 'file_chunks', file_no), 'rb')
-    conn_socket.send(myfile.read())
+    conn_socket.send(myfile.read(1024*128))
     conn_socket.close()
     return None
 

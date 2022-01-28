@@ -4,6 +4,7 @@ import os, time
 import threading
 from _thread import *
 import random
+import chunker
 
 peers = []
 file_chunk_list = []
@@ -43,7 +44,7 @@ def receive():
         print(random_peer)
         r_client_socket.connect((peers[random_peer], SERVER_PORT))
         r_client_socket.send(bytes(str(file_chunk_list[random_chunk]),'utf-8'))
-        data = r_client_socket.recv(1024*129)
+        data = r_client_socket.recv(1024*128)
         msg = None
         try:
             msg = str(data, 'utf-8')
@@ -58,10 +59,10 @@ def receive():
             file_chunk_list.remove(file_chunk_list[random_chunk])
             print(file_chunk_list)
         
-        if len(file_chunk_list) == 0:
-            
-            return None
         r_client_socket.close()
+        if len(file_chunk_list) == 0:
+            chunker.join_file()
+            return None
             
 
 def main():

@@ -1,2 +1,4 @@
 p2p_file_sharing.code-workspace
 server/__pycache__
+client/__pycache__/chunker.cpython-38.pyc
+client/__pycache__/client.cpython-38.pyc
