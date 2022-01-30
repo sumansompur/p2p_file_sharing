@@ -73,6 +73,7 @@ def main():
         file_chunk_list.append(i)
     print(file_chunk_list)
     receive()
+    print("File Received! Add extension to the received file for use")
     
         
 
