@@ -24,7 +24,8 @@ def peer_request(addr):
         p_client_socket.send(bytes('hello', 'utf-8'))
         msg = str(p_client_socket.recv(1024), 'utf-8')
         print(msg)
-        file_chunk_num = int(msg[-2] + msg[-1])
+        if file_chunk_num == None:
+            file_chunk_num = int(msg[-2] + msg[-1])
         print(msg)
         msg = msg[0:-3]
         print(msg)
