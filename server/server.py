@@ -14,9 +14,9 @@ def init():
     server_socket.listen(5)
     return server_socket
 
-def send_data(conn_socket):
+def send_data(conn_socket, addr):
     file_no = str(conn_socket.recv(1024), 'utf-8')
-    print('Sending file_chunk ', file_no)
+    print('Sending file_chunk', file_no, "to", addr[0])
     myfile = open(os.path.join(os.getcwd(), 'server', 'file_chunks', file_no), 'rb')
     while True:
         pkt = myfile.read(2080)
@@ -39,7 +39,7 @@ def main():
         print("Ready to serve")
         while True:
             sock_obj, addr = server.accept()
-            start_new_thread(send_data, (sock_obj,))
+            start_new_thread(send_data, (sock_obj, addr))
     except KeyboardInterrupt:
         server.close()
 
