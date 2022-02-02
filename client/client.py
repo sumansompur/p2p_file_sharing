@@ -26,15 +26,13 @@ def peer_request(addr):
             print(msg)
             if file_chunk_num == None:
                 file_chunk_num = int(msg[-2] + msg[-1])
-            print(msg)
             msg = msg[0:-3]
-            print(msg)
             temp = list(msg.strip("[]").split(', '))
             arr = []
             for item in temp:
                 arr.append(item.strip("'"))
             peers = arr
-            print(peers)
+            print('Available peers=', peers)
             time.sleep(30)
 
 def receive():
@@ -71,14 +69,14 @@ def receive():
 def main():
     addr = input("Enter the tracker address:\n")
     a = start_new_thread(peer_request, (addr,))
-    print(a)
     time.sleep(2)
     for i in range(1, file_chunk_num+1):
         file_chunk_list.append(i)
     print(file_chunk_list)
     receive()
-    print("\n\nFile Received! Add extension to the received file for use")
-    print("Seeding File! Press Ctrl-C to exit")
+    print("\n\nFile Received in path below! Add extension to the received file for use")
+    print(os.path.join(os.getcwd(), 'client', 'File', 'rcvd_file'))
+    print("Seeding File! Press Ctrl-C to exit as a peer")
     try:
         while True:
             pass
@@ -87,6 +85,10 @@ def main():
             p_client_socket.connect((addr, 1234))
             p_client_socket.send(bytes('bye', 'utf-8'))
             p_client_socket.close()
+            for filename in os.listdir(os.path.join(os.getcwd(), 'client', 'file_chunks')):
+                file_path = os.path.join(os.path.join(os.getcwd(), 'client', 'file_chunks'), filename)
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
             
         
 

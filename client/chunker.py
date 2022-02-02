@@ -7,12 +7,9 @@ def join_file():
     for item in list:
         temp.append(int(item))
     temp.sort()
-    print(temp)
     file = open(os.path.join(os.getcwd(), 'client','File', 'rcvd_file'), 'ab')
     for num in temp:
-        print(num)
         temp = open(os.path.join(os.getcwd(), 'client','file_chunks', str(num)), 'rb')
-        print(temp.name)
         file.write(temp.read())
 
 

@@ -34,9 +34,10 @@ def init():
 def send_info(conn_sock, addr):
     C_ip = str(conn_sock.recv(1024), 'utf-8')
     global active
+    print('Active = ', active)
     if C_ip.lower() == 'bye':
         active.remove(addr[0])
-        print(active)
+        print('Active = ', active)
         conn_sock.close()
     else:
         send_message = str(active) + ',' + str(file_chunk_nos())
@@ -45,7 +46,7 @@ def send_info(conn_sock, addr):
         conn_sock.send(send_message)
         if active.count(addr[0]) == 0:
             active.append(addr[0])
-        print('active = ', active)
+        print('Active = ', active)
         conn_sock.close()
         return None
 
