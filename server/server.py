@@ -1,3 +1,4 @@
+from re import I
 import chunker
 import socket
 import os, shutil
@@ -15,9 +16,15 @@ def init():
 
 def send_data(conn_socket):
     file_no = str(conn_socket.recv(1024), 'utf-8')
-    print(file_no)
+    print('Sending file_chunk ', file_no)
     myfile = open(os.path.join(os.getcwd(), 'server', 'file_chunks', file_no), 'rb')
-    conn_socket.send(myfile.read(1024*128))
+    while True:
+        pkt = myfile.read(2080)
+        if len(pkt) > 0:
+            conn_socket.send(pkt)
+        else:
+            break
+
     conn_socket.close()
     return None
 
@@ -29,6 +36,7 @@ def main():
         dest_path = os.path.join(os.getcwd(), 'server', 'file_chunks')
         shutil.copy(path, source_path)
         chunker.split_file(source_path, dest_path)
+        print("Ready to serve")
         while True:
             sock_obj, addr = server.accept()
             start_new_thread(send_data, (sock_obj,))

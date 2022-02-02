@@ -36,23 +36,30 @@ def send_info(conn_sock, addr):
     global active
     if C_ip.lower() == 'bye':
         active.remove(addr[0])
-        conn_sock.send('bye')
+        print(active)
+        conn_sock.close()
     else:
         send_message = str(active) + ',' + str(file_chunk_nos())
         print(send_message)
         send_message = bytes(send_message,'utf-8')
         conn_sock.send(send_message)
-        active.append(addr[0])
+        if active.count(addr[0]) == 0:
+            active.append(addr[0])
+        print('active = ', active)
         conn_sock.close()
         return None
 
 
 def main():
     tracker = init()
-    global active
-    while True:
-        conn_sock, addr = tracker.accept()
-        start_new_thread(send_info, (conn_sock, addr))
+    try:
+        global active
+        while True:
+            conn_sock, addr = tracker.accept()
+            start_new_thread(send_info, (conn_sock, addr))
+    except KeyboardInterrupt:
+        tracker.close()
+
 
 
 

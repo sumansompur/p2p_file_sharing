@@ -14,19 +14,31 @@ def init():
 
 def send_data(conn_socket):
     file_no = str(conn_socket.recv(1024), 'utf-8')
+    print('Trying to send file_chunk ', file_no)
     try:
         myfile = open(os.path.join(os.getcwd(), 'client', 'file_chunks', file_no), 'rb')
-        conn_socket.send(myfile.read(1024*128))
-        conn_socket.close()
+        while True:
+            pkt = myfile.read(2080)
+            if len(pkt) > 0:
+                conn_socket.send(pkt)
+            else:
+                break
     except:
-        conn_socket.send(bytes('file unavailable', 'utf-8'))
+        print('File Chunk unavailabale')
+        conn_socket.send(b'file unavailable')
+    
+    conn_socket.close()
     return None
 
 def main():
-    server = init()
-    while True:
-        sock_obj, addr = server.accept()
-        start_new_thread(send_data, (sock_obj,))
+    try:
+        server = init()
+        while True:
+            sock_obj, addr = server.accept()
+            start_new_thread(send_data, (sock_obj,))
+    except KeyboardInterrupt:
+        server.close()
+        exit(0)
 
 
 
