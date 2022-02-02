@@ -32,6 +32,7 @@ def send_data(conn_socket):
 
 def main():
     try:
+        print("Peer Server ready")
         server = init()
         while True:
             sock_obj, addr = server.accept()
