@@ -52,6 +52,7 @@ def send_info(conn_sock, addr):
 
 def main():
     tracker = init()
+    print('Tracker Ready')
     try:
         global active
         while True:
